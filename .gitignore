@@ -1,0 +1,4 @@
+model_data/yolo.h5
+.ipynb_checkpoints
+__pycache__
+images/.DS_Store

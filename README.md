@@ -39,3 +39,11 @@ Configure a S3 Viewer to point to your S3 bucket. In Ambari File View config:
 ```
 fs.defaultFS=s3a://your-bucket/;fs.s3a.access.key=<your-access-key>;fs.s3a.secret.key=<your-secret-key>
 ```
+
+## Deep Learning Demo
+
+Detect dogs!
+https://pjreddie.com/darknet/yolo/?utm_source=next.36kr.com
+
+Art Dog
+
