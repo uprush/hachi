@@ -43,5 +43,5 @@ fs.defaultFS=s3a://your-bucket/;fs.s3a.access.key=<your-access-key>;fs.s3a.secre
 ## Deep Learning Demo
 
 AI for Dog Lover!
-See ![AI for Dog Lover notebook](./doglover.ipynb)
+See [AI for Dog Lover notebook](./doglover.ipynb)
 
