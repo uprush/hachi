@@ -42,8 +42,6 @@ fs.defaultFS=s3a://your-bucket/;fs.s3a.access.key=<your-access-key>;fs.s3a.secre
 
 ## Deep Learning Demo
 
-Detect dogs!
-https://pjreddie.com/darknet/yolo/?utm_source=next.36kr.com
-
-Art Dog
+AI for Dog Lover!
+See [AI for Dog Lover notebook](./doglover.ipynb)
 
