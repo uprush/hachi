@@ -1,14 +1,14 @@
-# Twitter Analytics Notebook – FlashBlade Demo
-S3A connector is a Hadoop DFS protocol implementation for S3 compitable storage. S3A connector enables the Hadoop ecosystem to store and process data in S3 compitable storages, including FlashBlade. S3A has been used in production for years, especially heavily used on the cloud environment. In this notebook, we demonstrate to use S3A supported tool, including hdfs command line, Apache Spark and Apache Hive, to access data in FlashBlade.
+# Twitter Analytics Notebook – S3A Demo
+S3A connector is a Hadoop DFS protocol implementation for S3 compitable storage. S3A connector enables the Hadoop ecosystem to store and process data in S3 compitable storages. S3A has been used in production for years, especially heavily used on the cloud environment. In this notebook, we demonstrate to use S3A supported tool, including hdfs command line, Apache Spark and Apache Hive, to access data in S3.
 
 ## Use Case
-Ingest Twitter data in real-time, send the data to Solr for near real-time indexing and dashboarding. Raw tweets data is also sent to FlashBlade. Further processing and analytics are performed using open source big data tools such as Apache Spark and Apache Hive.
+Ingest Twitter data in real-time, send the data to Solr for near real-time indexing and dashboarding. Raw tweets data is also sent to S3. Further processing and analytics are performed using open source big data tools such as Apache Spark and Apache Hive.
 
 Demo environment is built on top of Cloudera CDH 6.0.0.
 
 ## Process Data in Spark
-Let's take a look at the tweets data stored on FlashBlade.
-With S3A connector, we can use the hdfs command line to access FlashBlade just like accessing HDFS.
+Let's take a look at the tweets data stored in S3.
+With S3A connector, we can use the hdfs command line to access S3 just like accessing HDFS.
 
 ```sh
 $ su hdfs
@@ -160,9 +160,9 @@ Found 41 items
 ```
 
 ### Query Data in Apache Hive
-We can also use Apache Hive to access data stored in FlashBlade via S3A. This is open used for reporting use cases.
+We can also use Apache Hive to access data stored in S3 via S3A. This is open used for reporting use cases.
 
-Open a Hive client, create a external table in Hive, point its location to the bucket on FlashBlade via S3A.
+Open a Hive client, create a external table in Hive, point its location to the bucket on S3 via S3A.
 
 ```sql
 $ beeline
@@ -233,10 +233,10 @@ beeline> select screen_name, followers_count, text from twitter_users  limit 2;
 ```
 
 ## Summary
-We demonstrated big data analytics use cases on FlashBlade. S3A protocol support enables easy integration with big data and data analytics tool like Apache Spark and Apache Hive.
+We demonstrated big data analytics use cases on S3. S3A protocol support enables easy integration with big data and data analytics tool like Apache Spark and Apache Hive.
 
 Key Take Aways:
 
-- Simple. Instead of racks of nodes, a single FlashBlade 4U box provides up to 1.5PB data lake capacity.
-- Flexible Separate compute and storage, scale independantly.
+- Simple. Zero effort management.
+- Flexible. Separate compute and storage, scale independently.
 - Integrate with big data and data analytics tool.
