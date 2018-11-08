@@ -232,8 +232,20 @@ beeline> select screen_name, followers_count, text from twitter_users  limit 2;
 +---------------+------------------+----------------------------------------------------+
 ```
 
+Apache Impala also supports querying data in S3.
+```sql
+default> select screen_name, followers_count, text from twitter_users  limit 2;
++-------------+-----------------+-------------------------------------------------------+
+| screen_name | followers_count | text                                                  |
++-------------+-----------------+-------------------------------------------------------+
+| ttamiaaa    | 188             | RT @Namastaywoke: The fact that the dog could be...   |
+| Marxrawr    | 819             | RT @jessarakelyan: ‼️‼️‼️‼️ https://t.co/seeLQyuF68   |
++-------------+-----------------+-------------------------------------------------------+
+Fetched 2 row(s) in 0.04s
+```
+
 ## Summary
-We demonstrated big data analytics use cases on S3. S3A protocol support enables easy integration with big data and data analytics tool like Apache Spark and Apache Hive.
+We demonstrated big data analytics use cases on S3. S3A protocol support enables easy integration with big data and data analytics tool like Apache Spark, Apache Hive and Apache Impala.
 
 Key Take Aways:
 
