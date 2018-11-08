@@ -72,6 +72,12 @@ $ hdfs storagepolicies -setStoragePolicy -path /user/hdfs/mydata/2018-07-06 -pol
 $ hdfs mover -p /user/hdfs/mydata/2018-07-06
 Mover Successful: all blocks satisfy the specified storage policy. Exiting...
 Nov 8, 2018 9:17:36 AM   Mover took 10sec
+
+# For testing, check whether the storage policy is enforced.
+# If ONE_SSD is set, output should be similar to the below. Notice at the end of the output, the block is placed on SSD.
+$ hdfs fsck /user/hdfs/mydata/2018-11-07 -files -blocks -locations
+/user/hdfs/hot/hot.txt 12 bytes, replicated: replication=3, 1 block(s):...
+0. BP-139570110-10.226.228.6-1538100491457:blk_1073803027_62346 len=12 Live_repl=1  [DatanodeInfoWithStorage[10.226.228.6:9866,DS-5cf774f0-e49f-49b0-930b-bcd9b50f9f68,SSD]]
 ```
 
 A new data migration tool is added for moving data. The tool is similar to Balancer. It periodically scans the files in HDFS to check if the block placement satisfies the storage policy. For the blocks violating the storage policy, it moves the replicas to a different storage type in order to fulfill the storage policy requirement.
