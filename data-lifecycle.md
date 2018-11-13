@@ -45,6 +45,8 @@ We describe each of these approaches.
 ### Move Data Between Storage Types in HDFS
 In recent Hadoop versions, the storage policy feature is enabled by default. The default storage type of a data node storage location will be DISK if it does not have a storage type tagged explicitly.
 
+![](images/one-ssd.png)
+
 A typical DLM scenario in this approach looks like:
 1. Create directories for different data temperature.
 2. Attach storage policy to directories.
