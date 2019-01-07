@@ -57,29 +57,34 @@ A typical DLM scenario in this approach looks like:
 The below is an example.
 ```sh
 # Assume data is partitioned by date
-$ hdfs dfs -mkdir /user/hdfs/mydata/2018-11-07
+$ hdfs dfs -mkdir -p /user/hdfs/mydata/2018-11-07
 
 # Set storage policy to One_SSD.
 $ hdfs storagepolicies -setStoragePolicy -path /user/hdfs/mydata/2018-11-07 -policy One_SSD
 
 # Upload data to the directory.
 # For data in this directory, HDFS automatically puts one replica in SSD, two in DISK.
-$ hdfs dfs -put 2018-11-07.log /user/hdfs/mydata/2018-11-07
+$ hdfs dfs -put new-data.txt /user/hdfs/mydata/2018-11-07
+
+# For testing, check whether the storage policy is enforced.
+# If ONE_SSD is set, output should be similar to the below. Notice at the end of the output, one block replica is put on SSD, other replicas are on DISK.
+$ hdfs fsck /user/hdfs/mydata/2018-11-07 -files -blocks -locations
+/user/hdfs/mydata/2018-11-07/new-data.txt 12 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-139570110-10.226.228.6-1538100491457:blk_1073888555_147881 len=12 Live_repl=2  [DatanodeInfoWithStorage[10.226.228.30:9866,DS-902aa853-1874-43b3-84b2-3e4931a87abc,DISK], DatanodeInfoWithStorage[10.226.228.6:9866,DS-5cf774f0-e49f-49b0-930b-bcd9b50f9f68,SSD]]
 
 # For old data, change its policy to Hot.
 # The policy name is misleading, but by changing it to Hot, all replicas are stored in DISK.
 $ hdfs storagepolicies -setStoragePolicy -path /user/hdfs/mydata/2018-07-06 -policy Hot
+$ hdfs dfs -put old-data.txt /user/hdfs/mydata/2018-07-06
+$ hdfs fsck /user/hdfs/mydata/2018-07-06 -files -blocks -locations
+/user/hdfs/mydata/2018-07-06/old-data.txt 13 bytes, replicated: replication=2, 1 block(s):  OK
+0. BP-139570110-10.226.228.6-1538100491457:blk_1073888563_147889 len=13 Live_repl=2  [DatanodeInfoWithStorage[10.226.228.30:9866,DS-902aa853-1874-43b3-84b2-3e4931a87abc,DISK], DatanodeInfoWithStorage[10.226.228.6:9866,DS-915f1317-fe05-42de-8973-e8b3e0146cce,DISK]]
 
 # Run a Mover job to enforce the changed storage policy.
 $ hdfs mover -p /user/hdfs/mydata/2018-07-06
 Mover Successful: all blocks satisfy the specified storage policy. Exiting...
 Nov 8, 2018 9:17:36 AM   Mover took 10sec
 
-# For testing, check whether the storage policy is enforced.
-# If ONE_SSD is set, output should be similar to the below. Notice at the end of the output, the block is placed on SSD.
-$ hdfs fsck /user/hdfs/mydata/2018-11-07 -files -blocks -locations
-/user/hdfs/hot/hot.txt 12 bytes, replicated: replication=3, 1 block(s):...
-0. BP-139570110-10.226.228.6-1538100491457:blk_1073803027_62346 len=12 Live_repl=1  [DatanodeInfoWithStorage[10.226.228.6:9866,DS-5cf774f0-e49f-49b0-930b-bcd9b50f9f68,SSD]]
 ```
 
 A new data migration tool is added for moving data. The tool is similar to Balancer. It periodically scans the files in HDFS to check if the block placement satisfies the storage policy. For the blocks violating the storage policy, it moves the replicas to a different storage type in order to fulfill the storage policy requirement.
