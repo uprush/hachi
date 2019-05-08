@@ -1,5 +1,5 @@
 # Twitter Analytics Notebook – S3A Demo
-S3A connector is a Hadoop DFS protocol implementation for S3 compitable storage. S3A connector enables the Hadoop ecosystem to store and process data in S3 compitable storages. S3A has been used in production for years, especially heavily used on the cloud environment. In this notebook, we demonstrate to use S3A supported tool, including hdfs command line, Apache Spark and Apache Hive, to access data in S3.
+S3A connector is a Hadoop DFS protocol implementation for S3 compatible storage. S3A connector enables the Hadoop ecosystem to store and process data in S3 compatible storages. S3A has been used in production for years, especially heavily used on the cloud environment. In this notebook, we demonstrate to use S3A supported tool, including hdfs command line, Apache Spark and Apache Hive, to access data in S3.
 
 ## Use Case
 Ingest Twitter data in real-time, send the data to Solr for near real-time indexing and dashboarding. Raw tweets data is also sent to S3. Further processing and analytics are performed using open source big data tools such as Apache Spark and Apache Hive.
