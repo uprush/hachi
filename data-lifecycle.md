@@ -48,11 +48,60 @@ In recent Hadoop versions, the storage policy feature is enabled by default. The
 ![](images/one-ssd.png)
 
 A typical DLM scenario in this approach looks like:
-1. Create directories for different data temperature.
+1. Identifying data temperature.
 2. Attach storage policy to directories.
 3. Put data into the directory, where storage policy is enforced automatically for new created data.
-3. Change directory temperature periodically.
-4. Move data blocks to fullfil the storage policy requirement.
+4. Change directory temperature periodically.
+5. Move data blocks to fullfil the storage policy requirement.
+
+#### Checking Data Temperature
+Normally data in HDFS is stored in date partitioned directories, e.g., `/input/2019/05/20190530.csv`. So to check data temperature for these cases, it could be simply walk through the directories/files.
+
+For complex cases, we will need to check last modification/access time metadata of the file from the file system image. However, on a large HDFS cluster, there could be hundreds of thousands or more files. It is not efficient to send a HDFS API request to each single file.
+
+One way to do the check efficiently is to use the HDFS Offline Imange Viewer (OIV). Steps look like:
+1. Save name space on primary Namenode.
+2. Check point name space on secondary Namenode.
+3. Convert binary Namenode fsiamge file to text format using the OIV tool.
+4. Check data temperature in text format converted fsimage.
+
+Example commands as below:
+
+Save name space on primary Namenode. We save latest metadata to the fsimage file.
+```
+hdfs dfsadmin -safemode enter
+hdfs dfsadmin -saveNamespace
+hdfs dfsadmin -safemode leave
+```
+
+Check point name space on secondary Namenode. First, stop Secondary NameNode service.
+```
+hadoop-daemon.sh stop secondarynamenode
+```
+
+Now execute following command on the Secondary NameNode.
+```
+hadoop secondarynamenode -checkpoint force
+```
+
+Convert binary Namenode fsiamge file to text format using the OIV tool.
+```
+hdfs oiv -i fsimage_0000000000003976767 -o /tmp/fsimage.xml -p XML
+```
+
+From the converted fsimage.xml file, we can see each Inode section tag consist values of modification time (mtime), access times (atime), access permissions, block size and quota of metadata stored for files and directories.
+![fsimage content](images/fsimage-oiv-out.png)
+
+The last step is to parse the XML file and use the `mtime` or `atime` field to identify a file's data temperature. This can be done in simple scripts. The script summarizes last modified/accessed time (data temperature) of the directories. An example output looks like:
+
+| directory | # files | % mtime < 3 months | % atime < 3 months |
+| --- | --- | --- | --- |
+| /user/hdfs/mydata/2018-07 | 31 | 0 | 10 |
+| /user/hdfs/mydata/2018-10 | 31 | 100 | 100 |
+
+
+#### Enforcing Storage Policy
+After data temperature of a directory is identified, next step is to enforce storage policy on that directory.
 
 The below is an example.
 ```sh
@@ -88,6 +137,9 @@ Nov 8, 2018 9:17:36 AM   Mover took 10sec
 ```
 
 A new data migration tool is added for moving data. The tool is similar to Balancer. It periodically scans the files in HDFS to check if the block placement satisfies the storage policy. For the blocks violating the storage policy, it moves the replicas to a different storage type in order to fulfill the storage policy requirement.
+
+#### Summary of Data Lifecycle Management with HDFS Storage Tiering
+Using HDFS HDFS Storage Tiering, along with
 
 Advantages:
 
