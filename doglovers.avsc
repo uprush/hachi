@@ -3,16 +3,14 @@
   "type": "record",
   "name": "doglovers",
   "fields": [
+      {"name": "unixtime", "type": "long", "logicalType": "time-millis"},
+      {"name": "msg", "type": "string"},
       {"name": "hashtags", "type": "string"},
+      {"name": "tweet_id", "type": "string"},
+      {"name": "screen_name", "type": "string"},
       {"name": "language", "type": "string"},
       {"name": "location", "type": "string"},
-      {"name": "media_url", "type": "string"},
-      {"name": "msg", "type": "string"},
-      {"name": "screen_name", "type": "string"},
-      {"name": "time", "type": "string"},
-      {"name": "tweet_id", "type": "string"},
-      {"name": "unixtime", "type": "long", "logicalType": "time-millis"},
-      {"name": "user", "type": "string"}
+      {"name": "user", "type": "string"},
+      {"name": "media_url", "type": "string"}
   ]
 }
-
